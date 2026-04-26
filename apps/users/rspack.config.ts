@@ -1,6 +1,7 @@
 import { defineConfig } from '@rspack/cli';
 import { rspack } from '@rspack/core';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
+import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = 3002;
@@ -41,6 +42,13 @@ export default defineConfig({
     ],
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: 'users',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './UserList': './src/UserList.tsx',
+      },
+    }),
     new rspack.HtmlRspackPlugin({ template: './src/index.html' }),
     isDev && new ReactRefreshPlugin(),
   ].filter(Boolean) as any,

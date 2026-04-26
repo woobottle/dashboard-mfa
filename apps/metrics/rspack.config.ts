@@ -1,3 +1,4 @@
+import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 import { defineConfig } from '@rspack/cli';
 import { rspack } from '@rspack/core';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
@@ -41,6 +42,13 @@ export default defineConfig({
     ],
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: 'metrics',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './MetricsDashboard': './src/MetricsDashboard.tsx',
+      },
+    }),
     new rspack.HtmlRspackPlugin({ template: './src/index.html' }),
     isDev && new ReactRefreshPlugin(),
   ].filter(Boolean) as any,
