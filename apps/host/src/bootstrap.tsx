@@ -3,6 +3,7 @@ import { App } from './App';
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { TestProvider, TestContext } from '@dashboard/shared-ui';
+import LoginPage from './pages/LoginPage';
 
 console.log('[host] TestContext object id =', TestContext);
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
         <UserList />
       </Suspense>
     ),
+  },
+  {
+    path: '/login',
+    element:(<LoginPage />)
   },
   {
     path: '/',
