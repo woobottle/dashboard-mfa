@@ -1,21 +1,22 @@
+import { customFetcher } from '@dashboard/shared-api';
 import { useEffect, useState } from 'react';
 import { Button, Card } from '@dashboard/shared-ui';
 import type { DirectoryUser, Role, UserListResponse } from '@dashboard/shared-types';
 
 interface Props {
   token?: string | null;
-  role?: Role;
   onSelectUser?: (user: DirectoryUser) => void;
   apiBase?: string;
 }
 
 const DEFAULT_API_BASE = 'http://localhost:4000';
 
-export function UserList({ token, role, onSelectUser, apiBase = DEFAULT_API_BASE }: Props) {
+export function UserList({ token, onSelectUser, apiBase = DEFAULT_API_BASE }: Props) {
   const [users, setUsers] = useState<DirectoryUser[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [role, ] = useState(() => localStorage.getItem('authRole'))
 
   const canBan = role === 'admin' || role === 'cx';
 
@@ -26,7 +27,7 @@ export function UserList({ token, role, onSelectUser, apiBase = DEFAULT_API_BASE
     setLoading(true);
     setError(null);
 
-    fetch(`${apiBase}/api/users`, { headers })
+    customFetcher.fetchApi(`${apiBase}/api/users`, { headers })
       .then(async (res) => {
         if (!res.ok) {
           const body = await res.json().catch(() => ({ message: res.statusText }));
@@ -47,7 +48,7 @@ export function UserList({ token, role, onSelectUser, apiBase = DEFAULT_API_BASE
     try {
       const headers: Record<string, string> = {};
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${apiBase}/api/users/${user.id}/ban`, {
+      const res = await customFetcher.fetchApi(`${apiBase}/api/users/${user.id}/ban`, {
         method: 'POST',
         headers,
       });

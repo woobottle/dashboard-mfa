@@ -1,5 +1,7 @@
+import { customFetcher } from '@dashboard/shared-api';
 import type { LoginResponse } from '@dashboard/shared-types';
-import { redirect, useNavigate, useRoutes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const layoutStyle: React.CSSProperties = {
   fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -16,16 +18,18 @@ const LoginPage = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const username = formData.get('role') as string;
-    fetch('http://localhost:4000/auth/login', {
+    customFetcher.fetchApi('http://localhost:4000/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username }),
     })
       .then((resp) => resp.json())
       .then((data: LoginResponse) => {
-        localStorage.setItem('auth.token', data.token);
-        localStorage.setItem('auth.user', JSON.stringify(data.user));
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('authRole', data.user.role)
         navigate('/')
+      }).catch((error) => {
+        console.log(error);
       });
   };
 
