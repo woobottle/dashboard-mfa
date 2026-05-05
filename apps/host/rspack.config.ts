@@ -59,7 +59,9 @@ export default defineConfig({
         'react-dom': { singleton: true, requiredVersion: false, eager: true },
         'react-router-dom': { singleton: true, requiredVersion: false, eager: true },
         '@dashboard/shared-ui': { singleton: true },
-        '@dashboard/shared-api': { singleton: true, eager: true }
+        '@dashboard/shared-api': { singleton: true, eager: true },
+        '@dashboard/shared-store': { singleton: true, eager: true },
+        "@tanstack/react-query": { singleton: true, requiredVersion: false, eager: true }
       },
     }),
   ].filter(Boolean) as any,

@@ -2,23 +2,54 @@ import { customFetcher } from '@dashboard/shared-api';
 import { useEffect, useState } from 'react';
 import { Button, Card } from '@dashboard/shared-ui';
 import type { DirectoryUser, Role, UserListResponse } from '@dashboard/shared-types';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { userIdEventBus, useUserStore } from '@dashboard/shared-store';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   token?: string | null;
-  onSelectUser?: (user: DirectoryUser) => void;
   apiBase?: string;
 }
 
 const DEFAULT_API_BASE = 'http://localhost:4000';
 
-export function UserList({ token, onSelectUser, apiBase = DEFAULT_API_BASE }: Props) {
+export function UserList({ token,  apiBase = DEFAULT_API_BASE }: Props) {
   const [users, setUsers] = useState<DirectoryUser[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [role, ] = useState(() => localStorage.getItem('authRole'))
+  const navigate = useNavigate();
+  // url state 사용
+  // const [searchParams, setSearchParams] = useSearchParams()
+  //  const onSelectUser = (userId: string) => {
+  //   const newSearchParams = new URLSearchParams(searchParams);
+  //   newSearchParams.set('userId', userId);
+  //   setSearchParams(newSearchParams);
+  //   navigate('/metrics');
+  // }
+  // zustand store 사용
+  // const setUserId = useUserStore((state) => state.setUserId)
+  // const onSelectUser = (userId: string) => {
+  //   setUserId(userId);
+  //   navigate('/metrics');
+  // }
+
+  // event bus 사용
+  const setUserId = userIdEventBus.set
+  const onSelectUser = (userId: string) => {
+    setUserId(userId);
+    navigate('/metrics');
+  }
 
   const canBan = role === 'admin' || role === 'cx';
+
+  const getAuthMe = useQuery({ queryKey: ['authMe'], queryFn: async () => {
+    const res = await customFetcher.fetchApi(`${apiBase}/auth/me`, {})
+    return res.json()
+  }})
+
+  console.log(getAuthMe.data)
 
   const load = () => {
     const headers: Record<string, string> = {};
@@ -90,8 +121,8 @@ export function UserList({ token, onSelectUser, apiBase = DEFAULT_API_BASE }: Pr
           {users.map((u) => (
             <tr
               key={u.id}
-              style={{ borderTop: '1px solid #f3f4f6', cursor: onSelectUser ? 'pointer' : 'default' }}
-              onClick={() => onSelectUser?.(u)}
+              style={{ borderTop: '1px solid #f3f4f6', cursor: !!onSelectUser ? 'pointer' : 'default' }}
+              onClick={() => onSelectUser(u.id)}
             >
               <td style={{ padding: '6px 4px' }}>{u.name}</td>
               <td style={{ padding: '6px 4px' }}>{u.email}</td>

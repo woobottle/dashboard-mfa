@@ -2,12 +2,11 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { TestProvider, TestContext } from '@dashboard/shared-ui';
 import LoginPage from './pages/LoginPage';
 import { customFetcher } from '@dashboard/shared-api';
 import NoAuthroizedPage from './pages/NoAuthroizedPage';
+import { QueryClientProvider } from '@dashboard/shared-store';
 
-console.log('[host] TestContext object id =', TestContext);
 
 const MetricsDashboard = lazy(() => import('metrics/MetricsDashboard'));
 const UserList = lazy(() => import('users/UserList'));
@@ -52,7 +51,6 @@ customFetcher.setRequestInterceptor((opts) => {
 })
 
 customFetcher.setResponseInterceptor((response) => {
-  console.log('this is shit')
   if(response.status === 401) {
     router.navigate('/')
   } 
@@ -69,7 +67,7 @@ const container = document.getElementById('root');
 if (!container) throw new Error('#root element not found');
 
 createRoot(container).render(
-  <TestProvider value={{ theme: 'light' }}>
+  <QueryClientProvider>
     <RouterProvider router={router} />
-  </TestProvider>,
+  </QueryClientProvider>
 );
