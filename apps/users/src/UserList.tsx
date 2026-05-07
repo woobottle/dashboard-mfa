@@ -1,6 +1,6 @@
 import { customFetcher } from '@dashboard/shared-api';
 import { useEffect, useState } from 'react';
-import { Button, Card } from '@dashboard/shared-ui';
+import { Button, Card, ErrorBoundary } from '@dashboard/shared-ui';
 import type { DirectoryUser, Role, UserListResponse } from '@dashboard/shared-types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { userIdEventBus, useUserStore } from '@dashboard/shared-store';
@@ -133,6 +133,7 @@ export function UserList({ token,  apiBase = DEFAULT_API_BASE }: Props) {
               </td>
               <td style={{ padding: '6px 4px' }}>
                 {canBan && !u.banned ? (
+                  <ErrorBoundary fallback={<>reload</>}>
                   <Button
                     variant="danger"
                     disabled={busyId === u.id}
@@ -143,6 +144,7 @@ export function UserList({ token,  apiBase = DEFAULT_API_BASE }: Props) {
                   >
                     제재
                   </Button>
+                  </ErrorBoundary>
                 ) : null}
               </td>
             </tr>
