@@ -3,7 +3,7 @@ import { rspack } from '@rspack/core';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
 import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
-
+import path from 'path';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = 3000;
@@ -55,14 +55,19 @@ export default defineConfig({
       },
       shared: {
         // strictVersion을 키지 않으면 버전이 달라도 에러가 나지 않는다 / true로 값을 줄경우 metric에서 18.2.0으로 설정했는데 18.3.1로 들어왔다고 에러를 뱉음
-        react: { singleton: true, requiredVersion: false, eager: true },
-        'react-dom': { singleton: true, requiredVersion: false, eager: true },
-        'react-router-dom': { singleton: true, requiredVersion: false, eager: true },
+        react: { singleton: true, requiredVersion: false },
+        'react-dom': { singleton: true, requiredVersion: false },
+        'react-router-dom': { singleton: true, requiredVersion: false },
         '@dashboard/shared-ui': { singleton: true },
-        '@dashboard/shared-api': { singleton: true, eager: true },
-        '@dashboard/shared-store': { singleton: true, eager: true },
-        "@tanstack/react-query": { singleton: true, requiredVersion: false, eager: true }
+        '@dashboard/shared-api': { singleton: true },
+        '@dashboard/shared-store': { singleton: true },
+        "@tanstack/react-query": { singleton: true, requiredVersion: false }
       },
+      runtimePlugins: [
+        path.resolve(__dirname, './enhanced-offline-fallback-plugin.ts'),
+        path.resolve(__dirname, './runtime-plugin.ts'),
+        path.resolve(__dirname, './retry-plugin.ts')
+      ],
     }),
   ].filter(Boolean) as any,
   devServer: {

@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import { customFetcher } from '@dashboard/shared-api';
 import NoAuthroizedPage from './pages/NoAuthroizedPage';
 import { QueryClientProvider } from '@dashboard/shared-store';
+import { ErrorBoundary } from '@dashboard/shared-ui';
+import FallbackComponent from './FallbackComponent';
 
 
 const MetricsDashboard = lazy(() => import('metrics/MetricsDashboard'));
@@ -15,18 +17,23 @@ const router = createBrowserRouter([
   {
     path: '/metrics',
     element: (
-      <Suspense fallback={<div>Loading Metrics...</div>}>
-        <MetricsDashboard />
-      </Suspense>
+      <ErrorBoundary fallback={<FallbackComponent />}>
+        <Suspense fallback={<div>Loading Metrics...</div>}>
+          <MetricsDashboard />
+        </Suspense>
+      </ErrorBoundary>
     ),
+    errorElement: <FallbackComponent />
   },
   {
     path: '/users',
     element: (
-      <Suspense fallback={<div>Loading Users...</div>}>
-        <UserList />
-      </Suspense>
-    ),
+      <ErrorBoundary fallback={<div style={{padding:16}}>router caught: users 영역 사용 불가</div>}>
+        <Suspense fallback={<div>Loading Users...</div>}>
+          <UserList />
+        </Suspense>
+      </ErrorBoundary>
+    )
   },
   {
     path: '/login',

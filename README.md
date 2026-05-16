@@ -674,3 +674,28 @@ d => 새로고침 시 이슈가 없고 url이라는 공통상태를 공유하고
 타입 안정성: string으로 관리되므로 타입 안정성 떨어짐 (zod로 보완 가능)
 재사용성: 공통의 상태에 의존하므로 재사용성 높음
 새로고침/북마크 친화성: 새로고침 및 북마크 친화적
+
+## step5
+### manifest로드 실패
+  Uncaught runtime errors:
+×
+ERROR
+[ Federation Runtime ]: "http://localhost:3002/mf-manifest.json" is not a valid federation manifest for remote "users". Missing required fields: metaData, exposes, shared.
+    at error (http://localhost:3000/main.js:50940:8)
+    at Object.assert (http://localhost:3000/main.js:50929:7)
+    at getManifest (http://localhost:3000/main.js:49734:19)
+    at async asyncLoadProcess (http://localhost:3000/main.js:49743:25)
+ERROR
+[ Federation Runtime ]: "http://localhost:3002/mf-manifest.json" is not a valid federation manifest for remote "users". Missing required fields: metaData, exposes, shared.
+    at error (http://localhost:3000/main.js:50940:8)
+    at Object.assert (http://localhost:3000/main.js:50929:7)
+    at getManifest (http://localhost:3000/main.js:49734:19)
+    at async asyncLoadProcess (http://localhost:3000/main.js:49743:25)
+
+Uncaught runtime errors:
+×
+ERROR
+boom
+    at http://localhost:3002/__federation_expose_UserList.js:219:15
+    at commitHookEffectListMount 
+    

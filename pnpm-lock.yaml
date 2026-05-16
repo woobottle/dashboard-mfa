@@ -63,6 +63,9 @@ importers:
       '@dashboard/shared-ui':
         specifier: workspace:*
         version: link:../../packages/shared-ui
+      '@module-federation/retry-plugin':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@tanstack/react-query':
         specifier: ^5.100.9
         version: 5.100.9(react@18.3.1)
@@ -645,6 +648,9 @@ packages:
   '@module-federation/manifest@2.3.3':
     resolution: {integrity: sha512-mAEXuo5sGt8FUDzftU8f0ci0PbsZIDcLRYX9AkXwbXg0JRyVEvWyiBrEKF+zZuy7YM7eRdyp6JjLJPDzufhj5w==}
 
+  '@module-federation/retry-plugin@2.4.0':
+    resolution: {integrity: sha512-H+SbD2R+B073qyMW4sRc4YdCTho4xnldtm1qW25KcwMcs5agQnENSaDoRmyaXhpwXsgwHOhREt/xDquVUTOXDQ==}
+
   '@module-federation/rspack@2.3.3':
     resolution: {integrity: sha512-4s3G+wXZ6J3rKe0EeZnGLQUM7y+qpiI5NM3U6ylZuxD8q7mAwQVHThbH6ruDYUNDVEOc6N0j/+/LdfGRw+e5xw==}
     peerDependencies:
@@ -682,6 +688,14 @@ packages:
     resolution: {integrity: sha512-mwCS+LQdqiSc6fM5iz/S60ibaFNSH6kNqlZkCRIuS4yjdZ+jgnihz+6xp1QzppvfFgKLhEHBiXOmcYOdk3Ckew==}
     peerDependencies:
       node-fetch: ^3.3.2
+    peerDependenciesMeta:
+      node-fetch:
+        optional: true
+
+  '@module-federation/sdk@2.4.0':
+    resolution: {integrity: sha512-eZDdF5B69W9npuka0VL24FY7XDM+YAwwfkscSeWOSqv4/8Hm0xmcmSurlP6NIOrwbeogerRCtEcnx/TFXYjoow==}
+    peerDependencies:
+      node-fetch: ^2.7.0 || ^3.3.2
     peerDependenciesMeta:
       node-fetch:
         optional: true
@@ -2916,6 +2930,12 @@ snapshots:
       - utf-8-validate
       - vue-tsc
 
+  '@module-federation/retry-plugin@2.4.0':
+    dependencies:
+      '@module-federation/sdk': 2.4.0
+    transitivePeerDependencies:
+      - node-fetch
+
   '@module-federation/rspack@2.3.3(@rspack/core@1.7.11)(typescript@5.9.3)':
     dependencies:
       '@module-federation/bridge-react-webpack-plugin': 2.3.3
@@ -2974,6 +2994,8 @@ snapshots:
   '@module-federation/sdk@0.22.0': {}
 
   '@module-federation/sdk@2.3.3': {}
+
+  '@module-federation/sdk@2.4.0': {}
 
   '@module-federation/third-party-dts-extractor@2.3.3':
     dependencies:
