@@ -1,3 +1,4 @@
+import { customFetcher } from '@dashboard/shared-api';
 import { useEffect, useState } from 'react';
 import { Card, TestContext, useTestContext } from '@dashboard/shared-ui';
 import type { MetricsResponse } from '@dashboard/shared-types';
@@ -42,7 +43,7 @@ export function MetricsDashboard({
     setLoading(true);
     setError(null);
 
-    fetch(`${apiBase}/api/metrics?${params.toString()}`, {
+    customFetcher.fetchApi(`${apiBase}/api/metrics?${params.toString()}`, {
       headers,
       signal: controller.signal,
     })

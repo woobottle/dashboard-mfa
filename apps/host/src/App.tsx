@@ -1,4 +1,5 @@
 import { Card } from '@dashboard/shared-ui';
+import { useEffect } from 'react';
 
 const layoutStyle: React.CSSProperties = {
   fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -18,6 +19,8 @@ const navStyle: React.CSSProperties = {
 };
 
 export function App() {
+
+  
   return (
     <div style={layoutStyle}>
       <header style={navStyle}>

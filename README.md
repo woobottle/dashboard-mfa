@@ -614,3 +614,31 @@ pnpm -F users dev
 - [TanStack Query SSR / shared cache](https://tanstack.com/query/latest/docs/framework/react/guides/ssr)
 
 수고하셨어요!
+
+
+## step3 3패턴 비교
+패턴 (a) — React Context 공유
+* Host-Remote 의존성이 강함 / remote에서는 host에서의 provider하위에 존재해야함
+* shared 설정 복잡도 / 복잡도는 높지 않음, 
+* 토큰 보안 (XSS 노출 등) / 토큰이 메모리에 존재하고 있음, 토큰 보안에 대해선 안전
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 다른 host에 remote를 붙이려면 provider 세팅이 되어 있어야 함
+* 테스트 용이성 / provider를 주입해주어야 함, 테스트는 용이하다고 판단
+
+패턴 (b) — Storage + Fetch Interceptor
+* Host-Remote 의존성이 약함 / remote에서는 공통 fetch wrapper를 사용하면 됨
+* shared 설정 복잡도 / 토큰 주입등 shared의 fetch wrapper에서 이루어져야 함
+* 토큰 보안 (XSS 노출 등) / 토큰이 브라우저 스토리지에 위치하고 있어 xss 주의 필요
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 공통 fetch wrapper를 사용하면 문제 없음 
+* 테스트 용이성 / fetch wrapper mock을 주입해주어야 함, 테스트는 용이하다고 판단
+
+패턴 (c) — Shared Singleton Store
+* Host-Remote 의존성이 약함 / remote에서는 shared store에 의존
+* shared 설정 복잡도 / 복잡도는 높지 않다고 판단
+* 토큰 보안 (XSS 노출 등) / 토큰이 메모리에 존재하고 있음, 토큰 보안에 대해선 안전
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 공통 shared store를 쓰고 있으면 문제 x, 단 버전과 스키마가 동일해야함, 스키마 변경시 사용처들 전부 파악 필요
+* 테스트 용이성 / 현재 스키마에 맞는 store만 주입해주면 됨
+
+패턴 (b)를 선택한 이유
+* a, c 패턴에 비해 host와 remote의 의존성이 약하고, remote를 다른 곳에서도 재사용하기 편하다고 판단하였다
+* a, c 패턴을 선택하는 경우 토큰 주입에 대한 부분을 어떻게 해결할 것인가에 대한 고민이 필요하여 b에 대한 작업이 필수로 이루어져야 한다라고 판단하였다 / b 작업없이 진행할 경우 각 remote 앱의 fetch wrapper를 구현해야 한다
+* b 패턴을 선택해도 상태에 대한 공유는 필요하다 이때 browser api를 선택할 수 있다 / 컨텍스트 혹은 zustand로 공유하는 것이 더 나은 선택일 수 있다라고 생각
