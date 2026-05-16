@@ -2,15 +2,14 @@ import { customFetcher } from '@dashboard/shared-api';
 import { useEffect, useState } from 'react';
 import { Card, TestContext, useTestContext } from '@dashboard/shared-ui';
 import type { MetricsResponse } from '@dashboard/shared-types';
-import { Link, useLocation } from 'react-router-dom';
-
-console.log('[metrics] TestContext object id =', TestContext);
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { periodEventBus, regionEventBus, usePeriodStore, useRegionStore, userIdEventBus, useUserStore } from '@dashboard/shared-store';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   token?: string | null;
   period?: '7d' | '30d' | '90d';
   region?: 'seoul' | 'busan' | 'all';
-  userId?: string;
   apiBase?: string;
 }
 
@@ -18,18 +17,37 @@ const DEFAULT_API_BASE = 'http://localhost:4000';
 
 export function MetricsDashboard({
   token,
-  period = '7d',
-  region = 'all',
-  userId,
   apiBase = DEFAULT_API_BASE,
 }: Props) {
   const [data, setData] = useState<MetricsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const ctx = useTestContext();
-  const location = useLocation();
-  console.log(location)
+  // url state 사용
+  // const [searchParams, _setSearchParams] = useSearchParams()
+  // const [region, _setRegion] = useState(() => searchParams.get('region') || 'seoul');
+  // const [period, _setPeriod] = useState(() => searchParams.get('period') || '7d');
+  // const userId = searchParams.get('userId')
 
+  // zustand store 사용
+  // const period = usePeriodStore((state) => state.period)
+  // const region = useRegionStore((state) => state.region)
+  // const userId = useUserStore((state) => state.userId)
+
+  // event Bus 사용
+  const period = periodEventBus.useValue();
+  const region = regionEventBus.useValue();
+  const userId = userIdEventBus.useValue();
+  
+  const ctx = useTestContext()
+  const location = useLocation();
+  const getAuthMe = useQuery({ queryKey: ['authMe', userId], queryFn: async () => { 
+    const res = await customFetcher.fetchApi(`${apiBase}/auth/me`, {})
+    return res.json()
+  }})
+
+  console.log(getAuthMe.data)
+
+  
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('period', period);

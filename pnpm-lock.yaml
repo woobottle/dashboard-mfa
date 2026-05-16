@@ -51,12 +51,21 @@ importers:
 
   apps/host:
     dependencies:
+      '@dashboard/shared-api':
+        specifier: workspace:*
+        version: link:../../packages/shared-api
+      '@dashboard/shared-store':
+        specifier: workspace:*
+        version: link:../../packages/shared-store
       '@dashboard/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       '@dashboard/shared-ui':
         specifier: workspace:*
         version: link:../../packages/shared-ui
+      '@tanstack/react-query':
+        specifier: ^5.100.9
+        version: 5.100.9(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -94,12 +103,18 @@ importers:
 
   apps/metrics:
     dependencies:
+      '@dashboard/shared-store':
+        specifier: workspace:*
+        version: link:../../packages/shared-store
       '@dashboard/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       '@dashboard/shared-ui':
         specifier: workspace:*
         version: link:../../packages/shared-ui
+      '@tanstack/react-query':
+        specifier: ^5.100.9
+        version: 5.100.9(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -134,12 +149,18 @@ importers:
 
   apps/users:
     dependencies:
+      '@dashboard/shared-store':
+        specifier: workspace:*
+        version: link:../../packages/shared-store
       '@dashboard/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       '@dashboard/shared-ui':
         specifier: workspace:*
         version: link:../../packages/shared-ui
+      '@tanstack/react-query':
+        specifier: ^5.100.9
+        version: 5.100.9(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -165,6 +186,31 @@ importers:
       react-refresh:
         specifier: ^0.14.2
         version: 0.14.2
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+
+  packages/shared-api:
+    devDependencies:
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+
+  packages/shared-store:
+    dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.100.9
+        version: 5.100.9(react@18.3.1)
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.28
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      zustand:
+        specifier: ^5.0.12
+        version: 5.0.12(@types/react@18.3.28)(react@18.3.1)
+    devDependencies:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
@@ -850,6 +896,14 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+
+  '@tanstack/query-core@5.100.9':
+    resolution: {integrity: sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ==}
+
+  '@tanstack/react-query@5.100.9':
+    resolution: {integrity: sha512-Oa44XkaI3kCNN6ME0KByU3xT3SEUNOMfZpHxL6+wFoTm+OeUFYHKdeYVe0aOXlRDm/f15sgLwEt2HDorIdW8+A==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@turbo/darwin-64@2.9.6':
     resolution: {integrity: sha512-X/56SnVXIQZBLKwniGTwEQTGmtE5brSACnKMBWpY3YafuxVYefrC2acamfjgxP7BG5w3I+6jf0UrLoSzgPcSJg==}
@@ -2448,6 +2502,24 @@ packages:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
 
+  zustand@5.0.12:
+    resolution: {integrity: sha512-i77ae3aZq4dhMlRhJVCYgMLKuSiZAaUPAct2AksxQ+gOtimhGMdXljRT21P5BNpeT4kXlLIckvkPM029OljD7g==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
 snapshots:
 
   '@babel/code-frame@7.26.2':
@@ -3196,6 +3268,13 @@ snapshots:
       - '@emnapi/runtime'
 
   '@socket.io/component-emitter@3.1.2': {}
+
+  '@tanstack/query-core@5.100.9': {}
+
+  '@tanstack/react-query@5.100.9(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.100.9
+      react: 18.3.1
 
   '@turbo/darwin-64@2.9.6':
     optional: true
@@ -4880,3 +4959,8 @@ snapshots:
       is-wsl: 3.1.1
 
   xtend@4.0.2: {}
+
+  zustand@5.0.12(@types/react@18.3.28)(react@18.3.1):
+    optionalDependencies:
+      '@types/react': 18.3.28
+      react: 18.3.1
