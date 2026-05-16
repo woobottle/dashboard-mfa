@@ -614,3 +614,88 @@ pnpm -F users dev
 - [TanStack Query SSR / shared cache](https://tanstack.com/query/latest/docs/framework/react/guides/ssr)
 
 수고하셨어요!
+
+
+## step3 3패턴 비교
+패턴 (a) — React Context 공유
+* Host-Remote 의존성이 강함 / remote에서는 host에서의 provider하위에 존재해야함
+* shared 설정 복잡도 / 복잡도는 높지 않음, 
+* 토큰 보안 (XSS 노출 등) / 토큰이 메모리에 존재하고 있음, 토큰 보안에 대해선 안전
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 다른 host에 remote를 붙이려면 provider 세팅이 되어 있어야 함
+* 테스트 용이성 / provider를 주입해주어야 함, 테스트는 용이하다고 판단
+
+패턴 (b) — Storage + Fetch Interceptor
+* Host-Remote 의존성이 약함 / remote에서는 공통 fetch wrapper를 사용하면 됨
+* shared 설정 복잡도 / 토큰 주입등 shared의 fetch wrapper에서 이루어져야 함
+* 토큰 보안 (XSS 노출 등) / 토큰이 브라우저 스토리지에 위치하고 있어 xss 주의 필요
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 공통 fetch wrapper를 사용하면 문제 없음 
+* 테스트 용이성 / fetch wrapper mock을 주입해주어야 함, 테스트는 용이하다고 판단
+
+패턴 (c) — Shared Singleton Store
+* Host-Remote 의존성이 약함 / remote에서는 shared store에 의존
+* shared 설정 복잡도 / 복잡도는 높지 않다고 판단
+* 토큰 보안 (XSS 노출 등) / 토큰이 메모리에 존재하고 있음, 토큰 보안에 대해선 안전
+* 재사용성 (다른 Host에 Remote를 그대로 붙일 수 있는가) / 공통 shared store를 쓰고 있으면 문제 x, 단 버전과 스키마가 동일해야함, 스키마 변경시 사용처들 전부 파악 필요
+* 테스트 용이성 / 현재 스키마에 맞는 store만 주입해주면 됨
+
+패턴 (b)를 선택한 이유
+* a, c 패턴에 비해 host와 remote의 의존성이 약하고, remote를 다른 곳에서도 재사용하기 편하다고 판단하였다
+* a, c 패턴을 선택하는 경우 토큰 주입에 대한 부분을 어떻게 해결할 것인가에 대한 고민이 필요하여 b에 대한 작업이 필수로 이루어져야 한다라고 판단하였다 / b 작업없이 진행할 경우 각 remote 앱의 fetch wrapper를 구현해야 한다
+* b 패턴을 선택해도 상태에 대한 공유는 필요하다 이때 browser api를 선택할 수 있다 / 컨텍스트 혹은 zustand로 공유하는 것이 더 나은 선택일 수 있다라고 생각
+
+## step4 브로드캐스트 패턴 비교
+a => 현재의 형제구조 라우팅에서는 상태공유가 불가능 / 전체 라우팅 구조를 변경해야 props로 사용 가능
+d => 새로고침 시 이슈가 없고 url이라는 공통상태를 공유하고 있어 구현 및 테스트가 용이 / 타입 안정성은 떨어짐
+
+패턴: host-owned state (a)                                                         
+결합도: host-remote의 결합도가 높음                                                
+디버깅 용이성: 호스트가 직접 관리하므로 디버깅 용이                                       
+타입 안정성: 타입 안정적                                                           
+재사용성: host가 props들을 모두 들고 있다면 재사용성 높음                                 
+새로고침/북마크 친화성: 새로고침 및 북마크 친화적 떨어짐                                  
+────────────────────────────────────────
+패턴: 이벤트 버스 (b)                                                                     
+결합도: host-remote의 결합도가 낮음                                    
+디버깅 용이성: 디버깅 어려움                                                              
+타입 안정성: createSharedValue 같은 팩토리 사용 시에만 타입 안정적     
+재사용성: 공통의 상태에 의존적이라 remote 재사용 용이
+새로고침/북마크 친화성: 새로고침 및 북마크 친화적 떨어짐
+────────────────────────────────────────
+패턴: shared zustand store (c)                                                            
+결합도: host-remote의 결합도가 낮음
+디버깅 용이성: zustand store를 통해 상태 확인 가능                                        
+타입 안정성: 타입 안정적                                               
+재사용성: 공통의 상태에 의존적이라 remote 재사용 용이
+새로고침/북마크 친화성: 새로고침 및 북마크 친화적 떨어짐
+────────────────────────────────────────
+패턴: url state (d)                                                                       
+결합도: host-remote의 결합도가 낮음
+디버깅 용이성: url을 통해 상태 확인 가능                                                  
+타입 안정성: string으로 관리되므로 타입 안정성 떨어짐 (zod로 보완 가능)
+재사용성: 공통의 상태에 의존하므로 재사용성 높음
+새로고침/북마크 친화성: 새로고침 및 북마크 친화적
+
+## step5
+### manifest로드 실패
+  Uncaught runtime errors:
+×
+ERROR
+[ Federation Runtime ]: "http://localhost:3002/mf-manifest.json" is not a valid federation manifest for remote "users". Missing required fields: metaData, exposes, shared.
+    at error (http://localhost:3000/main.js:50940:8)
+    at Object.assert (http://localhost:3000/main.js:50929:7)
+    at getManifest (http://localhost:3000/main.js:49734:19)
+    at async asyncLoadProcess (http://localhost:3000/main.js:49743:25)
+ERROR
+[ Federation Runtime ]: "http://localhost:3002/mf-manifest.json" is not a valid federation manifest for remote "users". Missing required fields: metaData, exposes, shared.
+    at error (http://localhost:3000/main.js:50940:8)
+    at Object.assert (http://localhost:3000/main.js:50929:7)
+    at getManifest (http://localhost:3000/main.js:49734:19)
+    at async asyncLoadProcess (http://localhost:3000/main.js:49743:25)
+
+Uncaught runtime errors:
+×
+ERROR
+boom
+    at http://localhost:3002/__federation_expose_UserList.js:219:15
+    at commitHookEffectListMount 
+    

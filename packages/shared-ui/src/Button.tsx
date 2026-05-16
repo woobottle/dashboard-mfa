@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, CSSProperties } from 'react';
+import { useEffect, type ButtonHTMLAttributes, type CSSProperties } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'danger';
 
@@ -21,6 +21,11 @@ const baseStyle: CSSProperties = {
 };
 
 export function Button({ variant = 'primary', style, disabled, ...rest }: ButtonProps) {
+  
+  useEffect(() => {
+    throw new Error('boom')
+  }, [])
+
   const merged: CSSProperties = {
     ...baseStyle,
     ...variantStyles[variant],

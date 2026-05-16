@@ -48,6 +48,15 @@ export default defineConfig({
       exposes: {
         './UserList': './src/UserList.tsx',
       },
+      shared: {
+        react: { singleton: true },
+        'react-dom': { singleton: true },
+        'react-router-dom': { singleton: true },
+        '@dashboard/shared-ui': { singleton: true },
+        '@dashboard/shared-api': { singleton: true },
+        '@dashboard/shared-store': { singleton: true },
+        "@tanstack/react-query": { singleton: true }
+      },
     }),
     new rspack.HtmlRspackPlugin({ template: './src/index.html' }),
     isDev && new ReactRefreshPlugin(),

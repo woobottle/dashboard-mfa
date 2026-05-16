@@ -2,6 +2,7 @@ import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 import { defineConfig } from '@rspack/cli';
 import { rspack } from '@rspack/core';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
+import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = 3001;
@@ -42,11 +43,21 @@ export default defineConfig({
     ],
   },
   plugins: [
+    process.env.RSDOCTOR && new RsdoctorRspackPlugin({}),
     new ModuleFederationPlugin({
       name: 'metrics',
       filename: 'remoteEntry.js',
       exposes: {
         './MetricsDashboard': './src/MetricsDashboard.tsx',
+      },
+      shared: {
+        react: { singleton: true },
+        'react-dom': { singleton: true },
+        'react-router-dom': { singleton: true },
+        '@dashboard/shared-ui': { singleton: true },
+        '@dashboard/shared-api': { singleton: true },
+        '@dashboard/shared-store': { singleton: true },
+        "@tanstack/react-query": { singleton: true }
       },
     }),
     new rspack.HtmlRspackPlugin({ template: './src/index.html' }),

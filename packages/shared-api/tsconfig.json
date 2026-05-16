@@ -3,5 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src", "runtime-plugin.ts", "retry-plugin.ts"]
+  "include": ["src"]
 }

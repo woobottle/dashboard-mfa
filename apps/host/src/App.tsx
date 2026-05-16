@@ -1,4 +1,6 @@
 import { Card } from '@dashboard/shared-ui';
+import { createSharedValue, periodEventBus, regionEventBus, usePeriodStore, useRegionStore } from  '@dashboard/shared-store';
+import { useSearchParams } from 'react-router-dom';
 
 const layoutStyle: React.CSSProperties = {
   fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -18,6 +20,52 @@ const navStyle: React.CSSProperties = {
 };
 
 export function App() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  // url state 사용
+  // const [region, setRegion] = useState(() => searchParams.get('region') || 'seoul');
+  // const [period, setPeriod] = useState(() => searchParams.get('period') || '7d');
+  // const onChangePeriod = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const newSearchParams = new URLSearchParams(searchParams);
+  //   newSearchParams.set('period', e.target.value)
+  //   setSearchParams(newSearchParams);
+  // }
+  // const onChangeRegion = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const newSearchParams = new URLSearchParams(searchParams);
+  //   newSearchParams.set('region', e.target.value)
+  //   setSearchParams(newSearchParams);
+  // }
+
+  // zustand store 사용
+  // const setPeriod = usePeriodStore((state) => state.setPeriod)
+  // const period = usePeriodStore((state) => state.period)
+  // const setRegion = useRegionStore((state) => state.setRegion)
+  // const region = useRegionStore((state) => state.region)
+  
+  // const onChangePeriod = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const period = e.target.value;
+  //   setPeriod(period);
+  // }
+
+  // const onChangeRegion = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const region = e.target.value;
+  //   setRegion(region);
+  // }
+
+  // event bus 사용
+  const period = periodEventBus.useValue();
+  const region = regionEventBus.useValue();
+  
+  const onChangePeriod = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const period = e.target.value;
+    periodEventBus.set(period);
+  }
+
+  const onChangeRegion = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const region = e.target.value;
+    regionEventBus.set(region);
+  }
+  
+  
   return (
     <div style={layoutStyle}>
       <header style={navStyle}>
@@ -51,6 +99,21 @@ export function App() {
         <p style={{ margin: 0, lineHeight: 1.6 }}>
           BE는 <code>http://localhost:4000/health</code> 에서 동작 중인지 확인할 수 있어요.
         </p>
+      </Card>
+
+      <Card title="확인" style={{ marginTop: 16 }}>
+        <label htmlFor="period">기간 : </label>
+        <select id="period" onChange={onChangePeriod} value={period}>
+          <option value="7d">7일</option>
+          <option value="30d">30일</option>
+          <option value="90d">90일</option>
+        </select><br />
+        <label htmlFor="region">지역 : </label>
+        <select id="region" onChange={onChangeRegion} value={region}>
+          <option value="seoul">서울</option>
+          <option value="busan">부산</option>
+          <option value="all">전체</option>
+        </select>
       </Card>
     </div>
   );
