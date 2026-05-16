@@ -9,6 +9,7 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "@module-federation/enhanced": "^2.3.3",
     "turbo": "^2.1.3",
     "typescript": "^5.5.4"
   },
