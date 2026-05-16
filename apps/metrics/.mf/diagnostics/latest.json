@@ -1,0 +1,10 @@
+{
+  "latestErrorEvent": {
+    "code": "TYPE-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"npx tsc --project /Users/logan/Repository/wooBottle/mentoring/dashboard-mfa/apps/metrics/node_modules/.federation/tsconfig.5aca6bc0527875cb76cf87deff30b63f.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "args": {
+      "cmd": "npx tsc --project /Users/logan/Repository/wooBottle/mentoring/dashboard-mfa/apps/metrics/node_modules/.federation/tsconfig.5aca6bc0527875cb76cf87deff30b63f.json"
+    },
+    "timestamp": 1777210373863
+  }
+}

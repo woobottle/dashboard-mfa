@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Card } from '@dashboard/shared-ui';
+import { Card, TestContext, useTestContext } from '@dashboard/shared-ui';
 import type { MetricsResponse } from '@dashboard/shared-types';
+import { Link, useLocation } from 'react-router-dom';
+
+console.log('[metrics] TestContext object id =', TestContext);
 
 interface Props {
   token?: string | null;
@@ -22,6 +25,9 @@ export function MetricsDashboard({
   const [data, setData] = useState<MetricsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const ctx = useTestContext();
+  const location = useLocation();
+  console.log(location)
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -59,6 +65,20 @@ export function MetricsDashboard({
 
   return (
     <Card title={userId ? `유저 ${userId} 지표` : '전체 지표'}>
+      <div
+        style={{
+          background: ctx.theme === 'light' ? '#dcfce7' : '#fee2e2',
+          padding: 8,
+          marginBottom: 12,
+          fontSize: 12,
+          borderRadius: 4,
+        }}
+      >
+        🧪 useTestContext() → theme: <strong>{ctx.theme}</strong> / source:{' '}
+        <br />
+        (host의 Provider가 보이면 source=host, 아니면 default → Context 객체가 분리됨)
+      </div>
+      <Link to="/users">to users</Link>
       <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 12 }}>
         period: {period} · region: {region}
         {token ? '' : ' · ⚠️ 토큰 없이 호출 중 (BE는 401을 줄 거예요)'}
