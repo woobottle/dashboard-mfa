@@ -9,6 +9,7 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
     "@module-federation/enhanced": "^2.3.3",
     "@rsdoctor/rspack-plugin": "^1.5.9",
     "turbo": "^2.1.3",

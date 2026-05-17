@@ -55,6 +55,7 @@ export default defineConfig({
         '@dashboard/shared-ui': { singleton: true },
         '@dashboard/shared-api': { singleton: true },
         '@dashboard/shared-store': { singleton: true },
+        '@dashboard/shared-auth': { singleton: true },
         "@tanstack/react-query": { singleton: true }
       },
     }),

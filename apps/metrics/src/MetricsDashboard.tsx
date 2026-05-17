@@ -5,6 +5,8 @@ import type { MetricsResponse } from '@dashboard/shared-types';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { periodEventBus, regionEventBus, usePeriodStore, useRegionStore, userIdEventBus, useUserStore } from '@dashboard/shared-store';
 import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@dashboard/shared-auth';
+
 
 interface Props {
   token?: string | null;
@@ -48,39 +50,50 @@ export function MetricsDashboard({
   console.log(getAuthMe.data)
 
   
+  // useEffect(() => {
+  //   const params = new URLSearchParams();
+  //   params.set('period', period);
+  //   params.set('region', region);
+  //   if (userId) params.set('userId', userId);
+
+  //   const headers: Record<string, string> = {};
+  //   if (token) headers.Authorization = `Bearer ${token}`;
+
+  //   const controller = new AbortController();
+  //   setLoading(true);
+  //   setError(null);
+
+  //   customFetcher.fetchApi(`${apiBase}/api/metrics?${params.toString()}`, {
+  //     headers,
+  //     signal: controller.signal,
+  //   })
+  //     .then(async (res) => {
+  //       if (!res.ok) {
+  //         const body = await res.json().catch(() => ({ message: res.statusText }));
+  //         throw new Error(`${res.status} · ${body.message ?? res.statusText}`);
+  //       }
+  //       return res.json() as Promise<MetricsResponse>;
+  //     })
+  //     .then((body) => setData(body))
+  //     .catch((err) => {
+  //       if ((err as Error).name === 'AbortError') return;
+  //       setError((err as Error).message);
+  //     })
+  //     .finally(() => setLoading(false));
+
+  //   return () => controller.abort();
+  // }, [token, period, region, userId, apiBase]);
+
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('period', period);
     params.set('region', region);
     if (userId) params.set('userId', userId);
 
-    const headers: Record<string, string> = {};
-    if (token) headers.Authorization = `Bearer ${token}`;
-
-    const controller = new AbortController();
-    setLoading(true);
-    setError(null);
-
-    customFetcher.fetchApi(`${apiBase}/api/metrics?${params.toString()}`, {
-      headers,
-      signal: controller.signal,
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({ message: res.statusText }));
-          throw new Error(`${res.status} · ${body.message ?? res.statusText}`);
-        }
-        return res.json() as Promise<MetricsResponse>;
-      })
-      .then((body) => setData(body))
-      .catch((err) => {
-        if ((err as Error).name === 'AbortError') return;
-        setError((err as Error).message);
-      })
-      .finally(() => setLoading(false));
-
-    return () => controller.abort();
-  }, [token, period, region, userId, apiBase]);
+    apiClient.get<MetricsResponse>(`/api/metrics?${params.toString()}`) 
+      .then(body => setData(body))
+      .catch((err) => setError((err as Error).message));
+  }, [period, region, userId])
 
   return (
     <Card title={userId ? `유저 ${userId} 지표` : '전체 지표'}>

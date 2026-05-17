@@ -21,11 +21,6 @@ const baseStyle: CSSProperties = {
 };
 
 export function Button({ variant = 'primary', style, disabled, ...rest }: ButtonProps) {
-  
-  useEffect(() => {
-    throw new Error('boom')
-  }, [])
-
   const merged: CSSProperties = {
     ...baseStyle,
     ...variantStyles[variant],

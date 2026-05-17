@@ -61,10 +61,10 @@ export default defineConfig({
         '@dashboard/shared-ui': { singleton: true },
         '@dashboard/shared-api': { singleton: true },
         '@dashboard/shared-store': { singleton: true },
-        "@tanstack/react-query": { singleton: true, requiredVersion: false }
+        "@tanstack/react-query": { singleton: true, requiredVersion: false },
+        "@dashboard/shared-auth": { singleton: true, requiredVersion: false }
       },
       runtimePlugins: [
-        path.resolve(__dirname, './enhanced-offline-fallback-plugin.ts'),
         path.resolve(__dirname, './runtime-plugin.ts'),
         path.resolve(__dirname, './retry-plugin.ts')
       ],

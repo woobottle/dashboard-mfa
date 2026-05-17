@@ -5,6 +5,7 @@ import type { DirectoryUser, Role, UserListResponse } from '@dashboard/shared-ty
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { userIdEventBus, useUserStore } from '@dashboard/shared-store';
 import { useQuery } from '@tanstack/react-query';
+import { apiClient, useAuthStore } from '@dashboard/shared-auth';
 
 interface Props {
   token?: string | null;
@@ -18,7 +19,7 @@ export function UserList({ token,  apiBase = DEFAULT_API_BASE }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [role, ] = useState(() => localStorage.getItem('authRole'))
+  const role = useAuthStore(s => s.user?.role)
   const navigate = useNavigate();
   // url state 사용
   // const [searchParams, setSearchParams] = useSearchParams()
@@ -51,27 +52,36 @@ export function UserList({ token,  apiBase = DEFAULT_API_BASE }: Props) {
 
   console.log(getAuthMe.data)
 
-  const load = () => {
-    const headers: Record<string, string> = {};
-    if (token) headers.Authorization = `Bearer ${token}`;
+  // const load = () => {
+  //   const headers: Record<string, string> = {};
+  //   if (token) headers.Authorization = `Bearer ${token}`;
 
+  //   setLoading(true);
+  //   setError(null);
+
+  //   customFetcher.fetchApi(`${apiBase}/api/users`, { headers })
+  //     .then(async (res) => {
+  //       if (!res.ok) {
+  //         const body = await res.json().catch(() => ({ message: res.statusText }));
+  //         throw new Error(`${res.status} · ${body.message ?? res.statusText}`);
+  //       }
+  //       return res.json() as Promise<UserListResponse>;
+  //     })
+  //     .then((body) => setUsers(body.users))
+  //     .catch((err) => setError((err as Error).message))
+  //     .finally(() => setLoading(false));
+  // };
+
+  const load = () => {
     setLoading(true);
     setError(null);
-
-    customFetcher.fetchApi(`${apiBase}/api/users`, { headers })
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({ message: res.statusText }));
-          throw new Error(`${res.status} · ${body.message ?? res.statusText}`);
-        }
-        return res.json() as Promise<UserListResponse>;
-      })
+    apiClient.get<UserListResponse>('/api/users')
       .then((body) => setUsers(body.users))
       .catch((err) => setError((err as Error).message))
       .finally(() => setLoading(false));
-  };
+  }
 
-  useEffect(load, [token, apiBase]);
+  useEffect(load, []);
 
   const handleBan = async (user: DirectoryUser) => {
     if (!canBan) return;
